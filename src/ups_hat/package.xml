@@ -6,7 +6,9 @@
 <description>UPS HAT INA219 baterry level detection</description>
   <maintainer email="alexey.education@gmail.com">Oleksii Nidzelskyi</maintainer>
     <license>Apache-2.0</license>
-    <exec_depend>python-smbus</exec_depend>
+    <exec_depend>python3-smbus</exec_depend>
+    <exec_depend>rclpy</exec_depend>
+    <exec_depend>std_msgs</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

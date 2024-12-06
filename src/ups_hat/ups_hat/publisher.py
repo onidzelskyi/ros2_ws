@@ -26,13 +26,13 @@ class MinimalPublisher(Node):
         self.publisher_ = self.create_publisher(Float32, 'INA219', 10)
         timer_period = 1.5  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
-        bus = smbus.SMBus(1)
+        self.bus = smbus.SMBus(1)
         self.addr = 0x2d
 
     def timer_callback(self):
-        data = bus.read_i2c_block_data(ADDR, 0x10, 0x06)
+        data = self.bus.read_i2c_block_data(self.addr, 0x10, 0x06)
         msg = Float32()
-        msg.data = data[2] | data[3] << 8
+        msg.data = float(data[2] | data[3] << 8)
         self.publisher_.publish(msg)
         self.get_logger().info("VBUS Current %5dmA" % (data[2] | data[3] << 8))
 
