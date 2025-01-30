@@ -20,8 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'talker = ultrasonic.publisher:main',
-            'listener = ultrasonic.subscriber:main',
+            'ultrasonic_publisher = ultrasonic.publisher:main',
         ],
     },
 )

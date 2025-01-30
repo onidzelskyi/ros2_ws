@@ -11,43 +11,43 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import rclpy
 from rclpy.node import Node
+from sensor_msgs.msg import Range
+from gpiozero import DistanceSensor
 
-from std_msgs.msg import String
 
-
-class MinimalPublisher(Node):
-
+class UltrasonicPublisher(Node):
     def __init__(self):
-        super().__init__('ultrasonic_distance_sensor_publisher')
-        self.publisher_ = self.create_publisher(String, 'HC_SR04', 10)
-        timer_period = 0.5  # seconds
-        self.timer = self.create_timer(timer_period, self.timer_callback)
-        self.i = 0
+        super().__init__('ultrasonic_publisher')
+        self.publisher_ = self.create_publisher(Range, 'ultrasonic_range', 10)
+        self.sensor = DistanceSensor(echo=23, trigger=24)
+        self.timer = self.create_timer(0.1, self.timer_callback)  # Publish at 10 Hz
 
     def timer_callback(self):
-        msg = String()
-        msg.data = 'Hello World: %d' % self.i
+        distance = self.sensor.distance * 100  # Convert to cm
+        msg = Range()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = 'ultrasonic_sensor'
+        msg.radiation_type = Range.ULTRASOUND
+        msg.field_of_view = 0.1  # Example value, adjust as needed
+        msg.min_range = 0.02  # Example value, adjust as needed
+        msg.max_range = 4.0  # Example value, adjust as needed
+        msg.range = distance
+
         self.publisher_.publish(msg)
-        self.get_logger().info('Publishing: "%s"' % msg.data)
-        self.i += 1
 
 
 def main(args=None):
     rclpy.init(args=args)
-
-    minimal_publisher = MinimalPublisher()
-
-    rclpy.spin(minimal_publisher)
-
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically
-    # when the garbage collector destroys the node object)
-    minimal_publisher.destroy_node()
-    rclpy.shutdown()
-
+    node = UltrasonicPublisher()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
