@@ -12,28 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+ROS2 node for subscribing to a topic and logging messages.
+
+This module contains a ROS2 node that subscribes to a topic and logs the received messages.
+"""
+
 import rclpy
 from rclpy.node import Node
-
 from std_msgs.msg import String
 
 
 class MinimalSubscriber(Node):
+    """ROS2 node for subscribing to a topic and logging messages."""
 
     def __init__(self):
+        """Initialize the MinimalSubscriber node."""
         super().__init__('ultrasonic_subscriber')
         self.subscription = self.create_subscription(
             String,
             'topic',
             self.listener_callback,
             10)
-        self.subscription  # prevent unused variable warning
+        # Prevent unused variable warning
+        self.subscription
 
     def listener_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg.data)
+        """Callback function to log the received message."""
+        self.get_logger().info(f'I heard: "{msg.data}"')
 
 
 def main(args=None):
+    """Main function to initialize and run the MinimalSubscriber node."""
     rclpy.init(args=args)
 
     minimal_subscriber = MinimalSubscriber()
