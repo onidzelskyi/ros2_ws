@@ -27,6 +27,7 @@ setup(
     entry_points={
         'console_scripts': [
             'ultrasonic_publisher = ultrasonic.publisher:main',
+            'dummy = ultrasonic.dummy_range:main',
         ],
     },
 )

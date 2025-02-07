@@ -22,8 +22,6 @@ ultrasonic sensor using the gpiozero library and publishes them as sensor_msgs/R
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Range
-from gpiozero import DistanceSensor
-import cv2 as cv
 import numpy as np
 
 
@@ -34,33 +32,19 @@ class UltrasonicPublisher(Node):
         """Initialize the UltrasonicPublisher node."""
         super().__init__('ultrasonic_publisher')
         self.publisher_ = self.create_publisher(Range, 'ultrasonic_range', 10)
-        self.sensor = DistanceSensor(echo=23, trigger=24)
         self.timer = self.create_timer(0.1, self.timer_callback)  # Publish at 10 Hz
-        
-        # Kalman
-        self.kalman = cv.KalmanFilter(2, 1)
-        self.kalman.measurementMatrix = np.array([[1, 0]], np.float32)
-        self.kalman.transitionMatrix = np.array([[1, 0], [0, 1]], np.float32)
-        self.kalman.processNoiseCov = np.array([[1, 0], [0, 1]], np.float32) * 0.03
 
     def timer_callback(self):
         """Callback function to publish sensor data at regular intervals."""
-        distance = self.sensor.distance * 100  # Convert to cm
+        distance = np.sin(self.get_clock().now().to_msg().sec / 10)* 50 + 50
         msg = Range()
         msg.header.stamp = self.get_clock().now().to_msg()
         msg.header.frame_id = 'ultrasonic_sensor'
         msg.radiation_type = Range.ULTRASOUND
         msg.field_of_view = 0.1  # Example value, adjust as needed
         msg.min_range = 0.02  # Example value, adjust as needed
-        # msg.max_range = 4.0  # Example value, adjust as needed
-        msg.max_range = distance  # Example value, adjust as needed
-        # msg.range = distance
-        
-        # Kalman
-        ekf = np.array([distance], dtype=np.float32)
-        self.kalman.correct(ekf)
-        prediction = self.kalman.predict()
-        msg.range = float(prediction[0][0])
+        msg.max_range = 4.0  # Example value, adjust as needed
+        msg.range = distance
 
         self.publisher_.publish(msg)
 
