@@ -4,6 +4,21 @@ This repository contains ROS2 packages designed for the Raspberry Pi 5.
 
 ## Installation
 
+### Install **ROS2**
+
+```bash
+sudo apt install ros-jazzy-desktop-full
+```
+
+
+### Install **Rosbridge server**
+
+```bash
+sudo apt install ros-jazzy-rosbridge-server
+```
+
+
+
 ### Install **colcon**
 
 ```bash
