@@ -52,9 +52,7 @@ class UltrasonicPublisher(Node):
         msg.radiation_type = Range.ULTRASOUND
         msg.field_of_view = 0.1  # Example value, adjust as needed
         msg.min_range = 0.02  # Example value, adjust as needed
-        # msg.max_range = 4.0  # Example value, adjust as needed
         msg.max_range = distance  # Example value, adjust as needed
-        # msg.range = distance
         
         # Kalman
         ekf = np.array([distance], dtype=np.float32)

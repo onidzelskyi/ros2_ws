@@ -4,10 +4,9 @@ from geometry_msgs.msg import Twist
 from gpiozero import Robot, Motor
 import time
 
-forward_speed = .2
-backward_speed = .2
-turn_speed = .25
-speed_scale = .2
+
+turn_speed = .3
+speed_scale = .25
 
 
 class MotorDriver(Node):
@@ -30,9 +29,7 @@ class MotorDriver(Node):
         if linear_x > 0:
             self.robot.forward(linear_x)
         elif angular_z > 0:
-            # self.robot.stop()
-            # time.sleep(1)
-            self.robot.backward(turn_speed, curve_right=1)
+            self.robot.backward(turn_speed, curve_right=.7)
 
 def main(args=None):
     rclpy.init(args=args)
